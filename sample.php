@@ -66,7 +66,7 @@ $presignedUrl = $presignedUrl->url;
 $file = file_get_contents("./$fileName");
 $s3 = requestPut($presignedUrl, ['file' => $file]);
 
-// REQUEST LAMBDA TO PROCESS MP3 TO WAV IMAGE
+// REQUEST LAMBDA TO PROCESS MP3 TO WAVE IMAGE
 $wavConf = [
     'w' => '',
     'h' => '',
@@ -83,7 +83,23 @@ if(!$wav2png->result) {
     return false;
 }
 
-// REQUEST LAMBDA TO PROCESS WAV IMAGE TO GEOMETRIC IMAGE
+// REQUEST LAMBDA TO PROCESS WAVE IMAGE USING IMAGE MAGICK
+$imagickConf = [
+    'gravity' => '',
+    'background' => '',
+    'extent' => '',
+    'file' => $wav2png->file,
+];
+$imagick = requestPost($API_URL.'/transforms/imagick', $imagickConf);
+$imagick = json_decode($imagick);
+
+// Check wav2png is error or not
+if(!$imagick->result) {
+    echo $imagick->message;
+    return false;
+}
+
+// REQUEST LAMBDA TO PROCESS WAVE IMAGE TO GEOMETRIC IMAGE
 $primConf = [
     'a' => '',
     'bg' => '',
@@ -93,7 +109,7 @@ $primConf = [
     'r' => '',
     'rep' => '',
     's' => '',
-    'file' => $wav2png->file,
+    'file' => $imagick->file,
 ];
 $primitive = requestPost($API_URL.'/transforms/primitive', $primConf);
 $primitive = json_decode($primitive);
