@@ -49,7 +49,7 @@ function requestPut($url, $data) {
 }
 
 // COMMON VARIABLES
-$API_URL = 'https://4zfd0c5vm3.execute-api.us-west-1.amazonaws.com/dev';
+$API_URL = 'https://ompcj5dtt8.execute-api.us-west-2.amazonaws.com/dev';
 $fileName = 'music.mp3';
 
 if(!file_exists($fileName)) {
